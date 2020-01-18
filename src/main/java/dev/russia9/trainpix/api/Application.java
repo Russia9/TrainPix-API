@@ -19,33 +19,33 @@ public class Application {
             String level = System.getenv("LEVEL");
             switch (level) {
                 case "OFF":
-                    Configurator.setLevel("TrainPix", Level.OFF);
+                    Configurator.setLevel("TrainPixAPI", Level.OFF);
                     break;
                 case "FATAL":
-                    Configurator.setLevel("TrainPix", Level.FATAL);
+                    Configurator.setLevel("TrainPixAPI", Level.FATAL);
                     break;
                 case "ERROR":
-                    Configurator.setLevel("TrainPix", Level.ERROR);
+                    Configurator.setLevel("TrainPixAPI", Level.ERROR);
                     break;
                 case "WARN":
-                    Configurator.setLevel("TrainPix", Level.WARN);
+                    Configurator.setLevel("TrainPixAPI", Level.WARN);
                     break;
                 case "DEBUG":
-                    Configurator.setLevel("TrainPix", Level.DEBUG);
+                    Configurator.setLevel("TrainPixAPI", Level.DEBUG);
                     break;
                 case "TRACE":
-                    Configurator.setLevel("TrainPix", Level.TRACE);
+                    Configurator.setLevel("TrainPixAPI", Level.TRACE);
                     break;
                 default:
-                    Configurator.setLevel("TrainPix", Level.INFO);
+                    Configurator.setLevel("TrainPixAPI", Level.INFO);
                     break;
             }
         }
         for (String arg : args) {
             if ("Debug=true".equals(arg)) {
-                Configurator.setLevel("TrainPix", Level.DEBUG);
+                Configurator.setLevel("TrainPixAPI", Level.DEBUG);
             } else if ("Trace=true".equals(arg)) {
-                Configurator.setLevel("TrainPix", Level.TRACE);
+                Configurator.setLevel("TrainPixAPI", Level.TRACE);
             }
         }
 
