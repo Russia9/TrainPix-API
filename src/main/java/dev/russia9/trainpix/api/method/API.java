@@ -1,23 +1,22 @@
 package dev.russia9.trainpix.api.method;
 
 import com.google.gson.Gson;
-import dev.russia9.trainpix.api.parsing.TrainParser;
+import dev.russia9.trainpix.api.method.train.TrainAPI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static spark.Spark.*;
 
 public class API {
+    private static final Logger logger = LogManager.getLogger("TrainPixAPI");
+
     public API() {
         Gson gson = new Gson();
-        port(8080);
+        port(10000);
         path("/api", () -> {
             path("/train", () -> {
-                get("/search", (request, response) -> {
-                    response.type("application/json");
-                    String query = request.queryParamOrDefault("term", "ЭР2");
-                    int size = Integer.parseInt(request.queryParamOrDefault("size", "5"));
-                    if(size>20) size = 20;
-                    return gson.toJson(TrainParser.search(query, size, null));
-                });
+                get("/search", TrainAPI::search);
+                get("/qsearch", TrainAPI::quickSearch);
             });
         });
         internalServerError((request, response) -> {

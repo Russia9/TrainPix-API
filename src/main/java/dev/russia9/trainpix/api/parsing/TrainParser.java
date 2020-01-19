@@ -22,7 +22,7 @@ import static dev.russia9.trainpix.api.parsing.Parser.getPage;
 public class TrainParser {
     private static final Logger logger = LogManager.getLogger("TrainPixAPI");
 
-    public static List<Train> search(String query, int size, Map<String, Integer> params) throws TrainNotFoundException, IOException {
+    public static List<Train> search(String query, int size, boolean quick, Map<String, Integer> params) throws TrainNotFoundException, IOException {
         List<Train> result = new ArrayList<>();
 
         StringBuilder searchURI = new StringBuilder();
@@ -51,14 +51,20 @@ public class TrainParser {
                 continue;
             }
 
-            result.add(get(id));
+            Train train;
+
+            if (quick) {
+                train = new Train(id);
+                train.setCondition(condition);
+                train.setName(trainRow.getElementsByTag("a").first().ownText());
+            } else {
+                train = get(id);
+            }
+
+            result.add(train);
             i++;
         }
         return result;
-    }
-
-    public static ArrayList<Train> qsearch(String query, int size, Map<String, Integer> params) throws TrainNotFoundException {
-        return null;
     }
 
     public static Train get(int id) throws TrainNotFoundException, IOException {

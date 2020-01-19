@@ -11,7 +11,7 @@ public class Model {
 
     /**
      * Model name
-     *
+     * <p>
      * Example:
      * https://trainpix.org/list.php?mid=98 - EM2
      */

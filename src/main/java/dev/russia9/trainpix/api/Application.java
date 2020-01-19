@@ -1,12 +1,9 @@
 package dev.russia9.trainpix.api;
 
-import dev.russia9.trainpix.api.parsing.Parser;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-
-import java.io.IOException;
 
 /**
  * Launch class
@@ -18,6 +15,7 @@ public class Application {
     private static final Logger logger = LogManager.getLogger("TrainPixAPI");
 
     public static void main(String[] args) {
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "Off");
         if (System.getenv("LEVEL") != null) {
             String level = System.getenv("LEVEL");
             switch (level) {

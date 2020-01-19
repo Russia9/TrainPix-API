@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Train {
     /**
-     * Trainpix Train ID
+     * Trainpix TrainAPI ID
      * <p>
      * Example:
      * https://trainpix.org/vehicle/15744/ - 15744
@@ -17,30 +17,30 @@ public class Train {
 
 
     /**
-     * Train name
-     *
+     * TrainAPI name
+     * <p>
      * Example:
      * https://trainpix.org/vehicle/15744/ - ЭМ4-015
      */
     private String name = null;
 
     /**
-     * Train Railway
+     * TrainAPI Railway
      */
     private Railway railway;
 
     /**
-     * Train Depot
+     * TrainAPI Depot
      */
     private Depot depot;
 
     /**
-     * Train model
+     * TrainAPI model
      */
     private Model model;
 
     /**
-     * Train manufacturer
+     * TrainAPI manufacturer
      * <p>
      * Example:
      * https://trainpix.org/vehicle/130815/ - Ural locomotives
@@ -48,7 +48,7 @@ public class Train {
     private String builder = null;
 
     /**
-     * Train identification number
+     * TrainAPI identification number
      * <p>
      * Example:
      * https://trainpix.org/vehicle/1375/ - 12236451/12236469
@@ -56,7 +56,7 @@ public class Train {
     private String identificationNumber = null;
 
     /**
-     * Train serial type
+     * TrainAPI serial type
      * <p>
      * Example:
      * https://trainpix.org/vehicle/9885/ - 62-301
@@ -64,7 +64,7 @@ public class Train {
     private String serialType = null;
 
     /**
-     * Train build date
+     * TrainAPI build date
      * <p>
      * Example:
      * https://trainpix.org/vehicle/130815/ - 05.2018
@@ -72,7 +72,7 @@ public class Train {
     private String built = null;
 
     /**
-     * Train category
+     * TrainAPI category
      * <p>
      * Example:
      * https://trainpix.org/vehicle/1375/ - Electric Locomotives
@@ -80,7 +80,7 @@ public class Train {
     private String category = "Other";
 
     /**
-     * Train condition
+     * TrainAPI condition
      * <p>
      * Conditions:
      * 1 - In operation
@@ -102,7 +102,7 @@ public class Train {
     private String note = null;
 
     /**
-     * Train photos
+     * TrainAPI photos
      */
     private List<Photo> photoList;
 
@@ -112,53 +112,9 @@ public class Train {
 
     public Train(int id, boolean photos) {
         this.id = id;
-        if(photos) {
+        if (photos) {
             photoList = new ArrayList<>();
         }
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRailway(Railway railway) {
-        this.railway = railway;
-    }
-
-    public void setDepot(Depot depot) {
-        this.depot = depot;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    public void setBuilder(String builder) {
-        this.builder = builder;
-    }
-
-    public void setIdentificationNumber(String identificationNumber) {
-        this.identificationNumber = identificationNumber;
-    }
-
-    public void setSerialType(String serialType) {
-        this.serialType = serialType;
-    }
-
-    public void setBuilt(String built) {
-        this.built = built;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setCondition(int condition) {
-        this.condition = condition;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public void addPhoto(Photo photo) {
@@ -169,43 +125,87 @@ public class Train {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Railway getRailway() {
         return railway;
+    }
+
+    public void setRailway(Railway railway) {
+        this.railway = railway;
     }
 
     public Depot getDepot() {
         return depot;
     }
 
+    public void setDepot(Depot depot) {
+        this.depot = depot;
+    }
+
     public Model getModel() {
         return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     public String getBuilder() {
         return builder;
     }
 
+    public void setBuilder(String builder) {
+        this.builder = builder;
+    }
+
     public String getIdentificationNumber() {
         return identificationNumber;
+    }
+
+    public void setIdentificationNumber(String identificationNumber) {
+        this.identificationNumber = identificationNumber;
     }
 
     public String getSerialType() {
         return serialType;
     }
 
+    public void setSerialType(String serialType) {
+        this.serialType = serialType;
+    }
+
     public String getBuilt() {
         return built;
+    }
+
+    public void setBuilt(String built) {
+        this.built = built;
     }
 
     public String getCategory() {
         return category;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public int getCondition() {
         return condition;
     }
 
+    public void setCondition(int condition) {
+        this.condition = condition;
+    }
+
     public String getNote() {
         return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }
