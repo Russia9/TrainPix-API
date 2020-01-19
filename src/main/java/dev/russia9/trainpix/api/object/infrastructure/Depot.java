@@ -16,4 +16,9 @@ public class Depot {
      * https://trainpix.org/list.php?did=117 - TCh-16 Vitebsk
      */
     private String name;
+
+    public Depot(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

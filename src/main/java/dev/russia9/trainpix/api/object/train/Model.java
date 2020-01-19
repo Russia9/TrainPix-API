@@ -16,4 +16,9 @@ public class Model {
      * https://trainpix.org/list.php?mid=98 - EM2
      */
     private String name;
+
+    public Model(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

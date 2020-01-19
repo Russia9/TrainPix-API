@@ -16,4 +16,9 @@ public class Railway {
      * https://trainpix.org/railway/2/ - Moscow railway
      */
     private String name;
+
+    public Railway(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

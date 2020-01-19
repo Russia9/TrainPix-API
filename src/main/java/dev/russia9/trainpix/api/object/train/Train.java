@@ -15,6 +15,15 @@ public class Train {
      */
     private int id;
 
+
+    /**
+     * Train name
+     *
+     * Example:
+     * https://trainpix.org/vehicle/15744/ - ЭМ4-015
+     */
+    private String name = null;
+
     /**
      * Train Railway
      */
@@ -108,6 +117,10 @@ public class Train {
         }
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setRailway(Railway railway) {
         this.railway = railway;
     }
@@ -150,5 +163,49 @@ public class Train {
 
     public void addPhoto(Photo photo) {
         this.photoList.add(photo);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Railway getRailway() {
+        return railway;
+    }
+
+    public Depot getDepot() {
+        return depot;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public String getBuilder() {
+        return builder;
+    }
+
+    public String getIdentificationNumber() {
+        return identificationNumber;
+    }
+
+    public String getSerialType() {
+        return serialType;
+    }
+
+    public String getBuilt() {
+        return built;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public int getCondition() {
+        return condition;
+    }
+
+    public String getNote() {
+        return note;
     }
 }

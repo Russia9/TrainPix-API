@@ -7,35 +7,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Parser {
     private static final Logger logger = LogManager.getLogger("TrainPixAPI");
+    private static int i = 0;
 
-    public static Train getTrain(int id) {
-        Train train = new Train(id);
-
-        train.setNote("Test note");
-        return train;
-    }
-
-    public static List<Train> searchTrains(String query, int size) {
-        List<Train> result = new ArrayList<>();
-        Train train = new Train(123123);
-        train.setBuilder("Test builder");
-        train.setNote("Test note");
-        train.setCondition(1);
-        result.add(train);
-        result.add(train);
-        result.add(train);
-        return result;
-    }
-
-    public static Document getPage(String url, String lang) throws IOException {
+    static Document getPage(String url) throws IOException {
+        i++;
+        logger.trace(url + " " + i + " " + System.currentTimeMillis());
         return Jsoup
                 .connect(url)
-                .cookie("lang", lang)
+                .cookie("lang", "en")
                 .get();
     }
 }

@@ -1,7 +1,7 @@
 package dev.russia9.trainpix.api.method;
 
 import com.google.gson.Gson;
-import dev.russia9.trainpix.api.parsing.Parser;
+import dev.russia9.trainpix.api.parsing.TrainParser;
 
 import static spark.Spark.*;
 
@@ -13,9 +13,16 @@ public class API {
             path("/train", () -> {
                 get("/search", (request, response) -> {
                     response.type("application/json");
-                    return gson.toJson(Parser.searchTrains("dfd",1));
+                    String query = request.queryParamOrDefault("term", "ЭР2");
+                    int size = Integer.parseInt(request.queryParamOrDefault("size", "5"));
+                    if(size>20) size = 20;
+                    return gson.toJson(TrainParser.search(query, size, null));
                 });
             });
+        });
+        internalServerError((request, response) -> {
+            response.type("application/json");
+            return "{}";
         });
     }
 }
