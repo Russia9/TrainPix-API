@@ -88,7 +88,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 	var note *string
 	var photoList []*photo.Photo
 
-	searchDocument.Find(".h21").Each(func(i int, selection *goquery.Selection) {
+	searchDocument.Find(".p0.horlines").Find(".h21").Each(func(i int, selection *goquery.Selection) {
 		if selection.Children().Size() > 1 {
 			key := selection.Find(".ds").Text()
 			switch key {

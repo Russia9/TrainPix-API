@@ -14,19 +14,19 @@ func Api(port int, logger *logrus.Logger) {
 	router := mux.NewRouter()
 
 	// Train API Group
-	router.HandleFunc("/api/v0.2/train/get", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/v0.3/train/get", func(w http.ResponseWriter, r *http.Request) {
 		train.Get(w,r, logger)
 	})
 
-	router.HandleFunc("/api/v0.2/train/search", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/v0.3/train/search", func(w http.ResponseWriter, r *http.Request) {
 		train.Search(w,r, logger)
 	})
-	router.HandleFunc("/api/v0.2/train/qsearch", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/v0.3/train/qsearch", func(w http.ResponseWriter, r *http.Request) {
 		train.QuickSearch(w,r, logger)
 	})
 
 	// Photo API Group
-	router.HandleFunc("/api/v0.2/photo/get", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/v0.3/photo/get", func(w http.ResponseWriter, r *http.Request) {
 		photo.Get(w, r, logger)
 	})
 
