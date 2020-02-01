@@ -6,35 +6,40 @@ import (
 	"trainpix-api/object/photo"
 )
 
-func PhotoGet(id int, quick bool) (photo.Photo, error) {
+func PhotoGet(id int, quick bool) (*photo.Photo, error) {
 	pageLink := "https://trainpix.org/photo/" + strconv.Itoa(id) + "/"
 	imageLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + ".jpg"
 	thumbnailLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + "_s.jpg"
-	date := ""
-	location := ""
-	author := ""
-	authorLink := ""
+	var date *string
+	var location *string
+	var author *string
+	var authorLink *string
 
 	if !quick {
 		photoDocument, err := GetPage(pageLink)
 		if err != nil {
-			return photo.Photo{}, err
+			return nil, err
 		}
 
 		if photoDocument.Find(":contains('Изображение не найдено')").Size() > 0 {
-			return photo.Photo{}, errors.New("404")
+			return nil, errors.New("404")
 		}
 
 		authorElement := photoDocument.Find("span.cmt_aname").Find("a").First()
-		author = authorElement.Text()
-		authorLink, _ = authorElement.Attr("href")
-		authorLink = "https://trainpix.org" + authorLink
+		authorName := authorElement.Text()
+		author = &authorName
+		authorURI, _ := authorElement.Attr("href")
+		authorURI = "https://trainpix.org" + authorURI
+		authorLink = &authorURI
 
-		location = photoDocument.Find("center").Find("b").First().Text()
-		date = photoDocument.Find("span.cmt_aname").Parent().Find("b").Last().Text()
+		locationText := photoDocument.Find("center").Find("b").First().Text()
+		location = &locationText
+
+		dateText := photoDocument.Find("span.cmt_aname").Parent().Find("b").Last().Text()
+		date = &dateText
 	}
 
-	return photo.Photo{
+	return &photo.Photo{
 		Id:         id,
 		Image:      imageLink,
 		Thumbnail:  thumbnailLink,

@@ -22,7 +22,9 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 
 	train, err := parser.TrainGet(id, false)
 	resultCode := 200
-	if err != nil {
+	if err == nil {
+
+	} else {
 		if err.Error() == "404" {
 			resultCode = 404
 		} else {
