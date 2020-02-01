@@ -35,7 +35,7 @@ func PhotoGet(id int, quick bool) (photo.Photo, error) {
 		authorLink = "https://trainpix.org" + authorLink
 
 		location = photoDocument.Find("center").Find("b").First().Text()
-		date = photoDocument.Find("span.cmt_aname").Parent().Find("b").Get(1).FirstChild.Data
+		date = photoDocument.Find("span.cmt_aname").Parent().Find("b").Last().Text()
 	}
 
 	return photo.Photo{
