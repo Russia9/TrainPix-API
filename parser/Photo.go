@@ -6,7 +6,7 @@ import (
 	"trainpix-api/object/photo"
 )
 
-func PhotoGet(id int, quick bool) (photo.Photo, error) {
+func PhotoGet(id int, quick bool) (*photo.Photo, error) {
 	pageLink := "https://trainpix.org/photo/" + strconv.Itoa(id) + "/"
 	imageLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + ".jpg"
 	thumbnailLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + "_s.jpg"
@@ -18,11 +18,11 @@ func PhotoGet(id int, quick bool) (photo.Photo, error) {
 	if !quick {
 		photoDocument, err := GetPage(pageLink)
 		if err != nil {
-			return photo.Photo{}, err
+			return nil, err
 		}
 
 		if photoDocument.Find(":contains('Изображение не найдено')").Size() > 0 {
-			return photo.Photo{}, errors.New("404")
+			return nil, errors.New("404")
 		}
 
 		authorElement := photoDocument.Find("span.cmt_aname").Find("a").First()
@@ -34,15 +34,15 @@ func PhotoGet(id int, quick bool) (photo.Photo, error) {
 		date = photoDocument.Find("span.cmt_aname").Parent().Find("b").Last().Text()
 	}
 
-	return photo.Photo{
+	return &photo.Photo{
 		Id:         id,
 		Image:      imageLink,
 		Thumbnail:  thumbnailLink,
 		Page:       pageLink,
-		Date:       date,
-		Location:   location,
-		Author:     author,
-		AuthorLink: authorLink,
+		Date:       &date,
+		Location:   &location,
+		Author:     &author,
+		AuthorLink: &authorLink,
 	}, nil
 }
 

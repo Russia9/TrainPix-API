@@ -11,14 +11,14 @@ import (
 	"trainpix-api/object/train"
 )
 
-func TrainSearch(query string, count int, quick bool) ([]train.Train, error) {
+func TrainSearch(query string, count int, quick bool) ([]*train.Train, error) {
 	searchURI := "https://trainpix.org/vsearch.php?num=" + url.QueryEscape(query)
 	searchDocument, err := GetPage(searchURI)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []train.Train
+	var result []*train.Train
 
 	iter := 0
 
@@ -40,23 +40,12 @@ func TrainSearch(query string, count int, quick bool) ([]train.Train, error) {
 
 		name := selection.Find("a").Text()
 
-		var trainElement train.Train
+		var trainElement *train.Train
 
 		if quick {
-			trainElement = train.Train{
-				Id:                   id,
-				Name:                 name,
-				Railway:              infrastructure.Railway{},
-				Depot:                infrastructure.Depot{},
-				Model:                train.Model{},
-				Builder:              "",
-				IdentificationNumber: "",
-				SerialType:           "",
-				Built:                "",
-				Category:             "",
-				Condition:            condition,
-				Note:                 "",
-				PhotoList:            nil,
+			trainElement = &train.Train{
+				Id:   id,
+				Name: name,
 			}
 		} else {
 			trainElement, _ = TrainGet(id, true)
@@ -69,30 +58,30 @@ func TrainSearch(query string, count int, quick bool) ([]train.Train, error) {
 	return result, nil
 }
 
-func TrainGet(id int, quick bool) (train.Train, error) {
+func TrainGet(id int, quick bool) (*train.Train, error) {
 	stringID := strconv.Itoa(id)
 	trainURI := "https://trainpix.org/vehicle/" + stringID + "/"
 	searchDocument, err := GetPage(trainURI)
 	if err != nil {
-		return train.Train{}, err
+		return nil, err
 	}
 
 	if searchDocument.Find(":contains('Подвижной состав не найден')").Size() > 0 {
-		return train.Train{}, errors.New("404")
+		return nil, errors.New("404")
 	}
 
 	name := searchDocument.Find("h1").First().Text()
 	var railway infrastructure.Railway
 	var depot infrastructure.Depot
 	var model train.Model
-	var builder string
-	var identificationNumber string
-	var serialType string
-	var built string
-	var category string
+	var builder *string
+	var identificationNumber *string
+	var serialType *string
+	var built *string
+	var category *string
 	condition := 1
-	var note string
-	var photoList []photo.Photo
+	var note *string
+	var photoList []*photo.Photo
 
 	searchDocument.Find(".h21").Each(func(i int, selection *goquery.Selection) {
 		if selection.Children().Size() > 1 {
@@ -102,43 +91,51 @@ func TrainGet(id int, quick bool) (train.Train, error) {
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "/")[2])
+				railwayName := linkElement.Text()
 				railway = infrastructure.Railway{
 					Id:   elementId,
-					Name: linkElement.Text(),
+					Name: railwayName,
 				}
 				break
 			case "Депо:":
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				depotName := linkElement.Text()
 				depot = infrastructure.Depot{
 					Id:   elementId,
-					Name: linkElement.Text(),
+					Name: depotName,
 				}
 				break
 			case "Серия:":
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				modelName := linkElement.Text()
 				model = train.Model{
 					Id:   elementId,
-					Name: linkElement.Text(),
+					Name: modelName,
 				}
 				break
 			case "Завод-изготовитель:":
-				builder = selection.Find(".d").Text()
+				builderText := selection.Find(".d").Text()
+				builder = &builderText
 				break
 			case "Сетевой №:":
-				identificationNumber = selection.Find(".d").Text()
+				identificationNumberText := selection.Find(".d").Text()
+				identificationNumber = &identificationNumberText
 				break
 			case "Заводской тип:":
-				serialType = selection.Find(".d").Text()
+				serialTypeText := selection.Find(".d").Text()
+				serialType = &serialTypeText
 				break
 			case "Построен:":
-				built = selection.Find(".d").Text()
+				builtText := selection.Find(".d").Text()
+				built = &builtText
 				break
 			case "Категория:":
-				category = selection.Find(".d").Text()
+				categoryText := selection.Find(".d").Text()
+				category = &categoryText
 				break
 			case "Текущее состояние:":
 				conditionClass, err := selection.Find("span").First().Attr("class")
@@ -151,7 +148,8 @@ func TrainGet(id int, quick bool) (train.Train, error) {
 				}
 				break
 			case "Примечание:":
-				note = selection.Find(".d").Text()
+				noteText := selection.Find(".d").Text()
+				note = &noteText
 				break
 			}
 		}
@@ -168,11 +166,11 @@ func TrainGet(id int, quick bool) (train.Train, error) {
 			return
 		}
 
-		photo, err := PhotoGet(id, quick)
-		photoList = append(photoList, photo)
+		trainPhoto, err := PhotoGet(id, quick)
+		photoList = append(photoList, trainPhoto)
 	})
 
-	return train.Train{
+	return &train.Train{
 		Id:                   id,
 		Name:                 name,
 		Railway:              railway,

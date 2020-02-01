@@ -9,30 +9,30 @@ import (
 	"trainpix-api/api/group/train"
 )
 
-func Api(port int, log *logrus.Logger) {
-	log.Trace("Creating router")
+func Api(port int, logger *logrus.Logger) {
+	logger.Trace("Creating router")
 	router := mux.NewRouter()
 
 	// Train API Group
-	router.HandleFunc("/api/v0.1/train/get", func(w http.ResponseWriter, r *http.Request) {
-		train.Get(w,r,log)
+	router.HandleFunc("/api/v0.2/train/get", func(w http.ResponseWriter, r *http.Request) {
+		train.Get(w,r, logger)
 	})
 
-	router.HandleFunc("/api/v0.1/train/search", func(w http.ResponseWriter, r *http.Request) {
-		train.Search(w,r,log)
+	router.HandleFunc("/api/v0.2/train/search", func(w http.ResponseWriter, r *http.Request) {
+		train.Search(w,r, logger)
 	})
-	router.HandleFunc("/api/v0.1/train/qsearch", func(w http.ResponseWriter, r *http.Request) {
-		train.QuickSearch(w,r,log)
+	router.HandleFunc("/api/v0.2/train/qsearch", func(w http.ResponseWriter, r *http.Request) {
+		train.QuickSearch(w,r, logger)
 	})
 
 	// Photo API Group
-	router.HandleFunc("/api/v0.1/photo/get", func(w http.ResponseWriter, r *http.Request) {
-		photo.Get(w, r, log)
+	router.HandleFunc("/api/v0.2/photo/get", func(w http.ResponseWriter, r *http.Request) {
+		photo.Get(w, r, logger)
 	})
 
-	log.Debug("Creating HTTP server")
+	logger.Debug("Creating HTTP server")
 	err := http.ListenAndServe(":"+strconv.Itoa(port), router)
 	if err != nil {
-		log.Panic("Server creation error: ", err)
+		logger.Panic("Server creation error: ", err)
 	}
 }
