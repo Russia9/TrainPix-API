@@ -20,7 +20,5 @@ func Api(port int) {
 	// Photo API Group
 	router.HandleFunc("/api/v0.1/photo/get", photo.Get)
 
-	router.HandleFunc("/api/v0.1/photo/search", photo.Search)
-
 	_ = http.ListenAndServe(":"+strconv.Itoa(port), router)
 }

@@ -17,7 +17,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 		id, _ = strconv.Atoi(v.Get("id"))
 	}
 
-	train, err := parser.TrainGet(id)
+	train, err := parser.TrainGet(id, false)
 	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"trainpix-api/object/infrastructure"
+	"trainpix-api/object/photo"
 	"trainpix-api/object/train"
 )
 
@@ -58,7 +59,7 @@ func TrainSearch(query string, count int, quick bool) ([]train.Train, error) {
 				PhotoList:            nil,
 			}
 		} else {
-			trainElement, _ = TrainGet(id)
+			trainElement, _ = TrainGet(id, true)
 		}
 
 		result = append(result, trainElement)
@@ -68,7 +69,7 @@ func TrainSearch(query string, count int, quick bool) ([]train.Train, error) {
 	return result, nil
 }
 
-func TrainGet(id int) (train.Train, error) {
+func TrainGet(id int, quick bool) (train.Train, error) {
 	stringID := strconv.Itoa(id)
 	trainURI := "https://trainpix.org/vehicle/" + stringID + "/"
 	searchDocument, err := GetPage(trainURI)
@@ -91,6 +92,7 @@ func TrainGet(id int) (train.Train, error) {
 	var category string
 	condition := 1
 	var note string
+	var photoList []photo.Photo
 
 	searchDocument.Find(".h21").Each(func(i int, selection *goquery.Selection) {
 		if selection.Children().Size() > 1 {
@@ -155,6 +157,21 @@ func TrainGet(id int) (train.Train, error) {
 		}
 	})
 
+	searchDocument.Find(".prw").Each(func(i int, selection *goquery.Selection) {
+		href, status := selection.Attr("href")
+		if status == false {
+			return
+		}
+
+		id, err := strconv.Atoi(strings.Split(href, "/")[2])
+		if err != nil {
+			return
+		}
+
+		photo, err := PhotoGet(id, quick)
+		photoList = append(photoList, photo)
+	})
+
 	return train.Train{
 		Id:                   id,
 		Name:                 name,
@@ -168,6 +185,6 @@ func TrainGet(id int) (train.Train, error) {
 		Category:             category,
 		Condition:            condition,
 		Note:                 note,
-		PhotoList:            nil,
+		PhotoList:            photoList,
 	}, nil
 }
