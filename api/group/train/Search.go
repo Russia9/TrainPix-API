@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"net/url"
 	"strconv"
 	"trainpix-api/api/response"
 	"trainpix-api/parser"
@@ -24,7 +25,7 @@ func Search(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	logger.Debug("train/search: query='", query, "' count='", count, "'")
 
 	resultCode := 200
-	trains, err := parser.TrainSearch(query, count, false)
+	trains, err := parser.TrainSearch(query, count, false, getParams(v))
 	if err != nil {
 		if err.Error() == "404" {
 			resultCode = 200
@@ -54,7 +55,7 @@ func QuickSearch(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) 
 	}
 	logger.Debug("train/qsearch: query='", query, "' count='", count, "'")
 
-	trains, err := parser.TrainSearch(query, count, true)
+	trains, err := parser.TrainSearch(query, count, true, getParams(v))
 	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {
@@ -69,4 +70,19 @@ func QuickSearch(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) 
 		ResultCode: resultCode,
 		Trains:     trains,
 	})
+}
+
+func getParams(v url.Values) map[string]string {
+	params := make(map[string]string)
+
+	if v.Get("state") != "" {
+		params["state"] = v.Get("state")
+	}
+	if v.Get("order") != "" {
+		params["order"] = v.Get("order")
+	}
+	if v.Get("st") != "" {
+		params["st"] = v.Get("st")
+	}
+	return params
 }

@@ -11,8 +11,13 @@ import (
 	"trainpix-api/object/train"
 )
 
-func TrainSearch(query string, count int, quick bool) ([]*train.Train, error) {
-	searchURI := "https://trainpix.org/vsearch.php?num=" + url.QueryEscape(query)
+func TrainSearch(query string, count int, quick bool, params map[string]string) ([]*train.Train, error) {
+	searchURI := "https://trainpix.org/vsearch.php?"
+	for key := range params {
+		searchURI = searchURI + "&" + key + "=" + params[key]
+	}
+	searchURI = searchURI + "&num=" + url.QueryEscape(query)
+
 	searchDocument, err := GetPage(searchURI)
 	if err != nil {
 		return nil, err
