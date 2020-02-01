@@ -6,10 +6,6 @@ import (
 	"trainpix-api/object/photo"
 )
 
-func PhotoSearch(query string, count int) {
-
-}
-
 func PhotoGet(id int, quick bool) (photo.Photo, error) {
 	pageLink := "https://trainpix.org/photo/" + strconv.Itoa(id) + "/"
 	imageLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + ".jpg"
