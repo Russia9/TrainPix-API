@@ -11,7 +11,7 @@ import (
 	"trainpix-api/object/train"
 )
 
-func TrainSearch(query string, count int, quick bool, params map[string]string) ([]*train.Train, error) {
+func TrainSearch(query string, count int, quick bool, params map[string]string) ([]*train.Train, int, int, error) {
 	searchURI := "https://trainpix.org/vsearch.php?"
 	for key := range params {
 		searchURI = searchURI + "&" + key + "=" + params[key]
@@ -20,17 +20,26 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 
 	searchDocument, err := GetPage(searchURI)
 	if err != nil {
-		return nil, err
+		return nil, 0, 0, err
 	}
+
+	if searchDocument.Find(":contains('Ничего не найдено.')").Size() > 0 {
+		return nil, 0, 0, errors.New("404")
+	}
+
+	countFound, _ := strconv.Atoi(searchDocument.Find(".main").Find("b").First().Text())
 
 	var result []*train.Train
 
 	iter := 0
+	countParsed := 0
 
 	searchDocument.Find(".rtable tbody *[class^=s]").Each(func(i int, selection *goquery.Selection) {
 		if iter >= count {
 			return
 		}
+		countParsed++
+
 		idString, _ := selection.Find("a").First().Attr("href")
 		id, _ := strconv.Atoi(strings.Split(idString, "/")[2])
 
@@ -49,8 +58,9 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 
 		if quick {
 			trainElement = &train.Train{
-				Id:   id,
-				Name: name,
+				Id:        id,
+				Name:      name,
+				Condition: condition,
 			}
 		} else {
 			trainElement, _ = TrainGet(id, true)
@@ -60,7 +70,7 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 		iter++
 	})
 
-	return result, nil
+	return result, countFound, countParsed, nil
 }
 
 func TrainGet(id int, quick bool) (*train.Train, error) {
@@ -86,6 +96,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 	var category *string
 	condition := 1
 	var note *string
+	var info *string
 	var photoList []*photo.Photo
 
 	searchDocument.Find(".p0.horlines").Find(".h21").Each(func(i int, selection *goquery.Selection) {
@@ -157,6 +168,9 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 				note = &noteText
 				break
 			}
+		} else {
+			infoText := selection.Find(".d").Text()
+			info = &infoText
 		}
 	})
 
@@ -188,6 +202,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 		Category:             category,
 		Condition:            condition,
 		Note:                 note,
+		Info:                 info,
 		PhotoList:            photoList,
 	}, nil
 }

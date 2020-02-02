@@ -29,18 +29,20 @@ func Search(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	logger.Debug("train/search: query='", query, "' count='", count, "'")
 
 	resultCode := 200
-	trains, err := parser.TrainSearch(query, count, false, getParams(v))
+	trains, countFound, countParsed, err := parser.TrainSearch(query, count, false, getParams(v))
 	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 200
+			resultCode = 404
 		} else {
 			resultCode = 500
+			logger.Trace(err)
 		}
-		logger.Trace(err)
 	}
 
 	json.NewEncoder(w).Encode(response.TrainSearch{
 		ResultCode: resultCode,
+		Found:      countFound,
+		Parsed:     countParsed,
 		Trains:     trains,
 	})
 }
@@ -59,19 +61,21 @@ func QuickSearch(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) 
 	}
 	logger.Debug("train/qsearch: query='", query, "' count='", count, "'")
 
-	trains, err := parser.TrainSearch(query, count, true, getParams(v))
+	trains, countFound, countParsed, err := parser.TrainSearch(query, count, true, getParams(v))
 	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {
 			resultCode = 404
 		} else {
 			resultCode = 500
+			logger.Trace(err)
 		}
-		logger.Trace(err)
 	}
 
 	json.NewEncoder(w).Encode(response.TrainSearch{
 		ResultCode: resultCode,
+		Found:      countFound,
+		Parsed:     countParsed,
 		Trains:     trains,
 	})
 }

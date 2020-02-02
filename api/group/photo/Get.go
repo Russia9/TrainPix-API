@@ -34,8 +34,8 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 			resultCode = 404
 		} else {
 			resultCode = 500
+			logger.Trace(err)
 		}
-		logger.Trace(err)
 	}
 
 	json.NewEncoder(w).Encode(response.PhotoGet{
