@@ -18,5 +18,6 @@ type Train struct {
 	Category             *string                `json:"category"`
 	Condition            int                    `json:"condition"`
 	Note                 *string                `json:"note"`
+	Info                 *string                `json:"info"`
 	PhotoList            []*photo.Photo         `json:"photos"`
 }
