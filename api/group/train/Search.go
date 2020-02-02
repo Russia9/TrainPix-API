@@ -22,6 +22,10 @@ func Search(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		count, _ = strconv.Atoi(v.Get("count"))
 	}
 
+	if count > 20 {
+		count = 20
+	}
+
 	logger.Debug("train/search: query='", query, "' count='", count, "'")
 
 	resultCode := 200
