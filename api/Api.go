@@ -29,6 +29,10 @@ func Api(port int, logger *logrus.Logger) {
 	router.HandleFunc("/api/v0.3/photo/get", func(w http.ResponseWriter, r *http.Request) {
 		photo.Get(w, r, logger)
 	})
+	router.HandleFunc("/api/v0.3/photo/random", func(w http.ResponseWriter, r *http.Request) {
+		photo.Random(w, r, logger)
+	})
+
 
 	logger.Debug("Creating HTTP server")
 	err := http.ListenAndServe(":"+strconv.Itoa(port), router)

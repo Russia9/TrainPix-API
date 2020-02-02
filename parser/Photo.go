@@ -3,7 +3,9 @@ package parser
 import (
 	"errors"
 	"strconv"
+	"strings"
 	"trainpix-api/object/photo"
+	"trainpix-api/object/train"
 )
 
 func PhotoGet(id int, quick bool) (*photo.Photo, error) {
@@ -49,6 +51,39 @@ func PhotoGet(id int, quick bool) (*photo.Photo, error) {
 		Author:     author,
 		AuthorLink: authorLink,
 	}, nil
+}
+
+func RandomPhotoGet() (*photo.Photo, *train.Train, error) {
+	pageLink := "https://trainpix.org/ph.php"
+	pageDocument, err := GetPage(pageLink)
+	if err != nil {
+		return nil, nil, err
+	}
+	photoUrl, _ := pageDocument.Find("#ph").Attr("src")
+
+	photoId, err := strconv.Atoi(strings.Split(strings.Split(photoUrl, "/")[5], ".")[0])
+	if err != nil {
+		return nil, nil, err
+	}
+
+	trainUrl, _ := pageDocument.Find(".pwrite").First().Find("a").Attr("href")
+
+	trainId, err := strconv.Atoi(strings.Split(trainUrl, "/")[2])
+	if err != nil {
+		return nil, nil, err
+	}
+
+	trainObject, err := TrainGet(trainId, true)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	photoObject, err := PhotoGet(photoId, false)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return photoObject, trainObject, nil
 }
 
 func getIDString(id int) string {
