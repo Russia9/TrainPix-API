@@ -192,9 +192,9 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 	return &train.Train{
 		Id:                   id,
 		Name:                 name,
-		Railway:              railway,
-		Depot:                depot,
-		Model:                model,
+		Railway:              &railway,
+		Depot:                &depot,
+		Model:                &model,
 		Builder:              builder,
 		IdentificationNumber: identificationNumber,
 		SerialType:           serialType,

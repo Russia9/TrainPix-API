@@ -17,6 +17,9 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 
 	if v.Get("id") != "" {
 		id, _ = strconv.Atoi(v.Get("id"))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		id=0
 	}
 
 	if v.Get("quick") != "" {
@@ -28,18 +31,16 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	logger.Debug("photo/get: id='", id, "' quick='", quick, "'")
 
 	photo, err := parser.PhotoGet(id, quick)
-	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 404
+			w.WriteHeader(http.StatusNotFound)
 		} else {
-			resultCode = 500
+			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
 	}
 
 	json.NewEncoder(w).Encode(response.PhotoGet{
-		ResultCode: resultCode,
-		Photo:      photo,
+		Photo: photo,
 	})
 }

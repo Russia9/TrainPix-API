@@ -6,7 +6,6 @@ import (
 )
 
 type PhotoRandomGet struct {
-	ResultCode int          `json:"result_code"`
-	Photo      *photo.Photo `json:"photo"`
-	Train      *train.Train `json:"train"`
+	Photo *photo.Photo `json:"photo"`
+	Train *train.Train `json:"train"`
 }

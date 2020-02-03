@@ -14,19 +14,17 @@ func Random(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	logger.Debug("photo/random")
 
 	photo, train, err := parser.RandomPhotoGet()
-	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 404
+			w.WriteHeader(http.StatusNotFound)
 		} else {
-			resultCode = 500
+			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
 	}
 
 	json.NewEncoder(w).Encode(response.PhotoRandomGet{
-		ResultCode: resultCode,
-		Photo:      photo,
-		Train:      train,
+		Photo: photo,
+		Train: train,
 	})
 }

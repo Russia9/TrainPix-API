@@ -4,9 +4,9 @@ type Photo struct {
 	Id         int         `json:"ID"`
 	Image      string      `json:"image"`
 	Thumbnail  string      `json:"thumbnail"`
-	Page       string      `json:"page"`
-	Date       *string     `json:"date"`
-	Location   *string     `json:"location"`
-	Author     *string     `json:"author"`
-	AuthorLink *string     `json:"author_link"`
+	Page       string      `json:"page,omitempty"`
+	Date       *string     `json:"date,omitempty"`
+	Location   *string     `json:"location,omitempty"`
+	Author     *string     `json:"author,omitempty"`
+	AuthorLink *string     `json:"author_link,omitempty"`
 }
