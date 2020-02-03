@@ -28,22 +28,20 @@ func Search(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 
 	logger.Debug("train/search: query='", query, "' count='", count, "'")
 
-	resultCode := 200
 	trains, countFound, countParsed, err := parser.TrainSearch(query, count, false, getParams(v))
 	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 404
+			w.WriteHeader(http.StatusNotFound)
 		} else {
-			resultCode = 500
+			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
 	}
 
 	json.NewEncoder(w).Encode(response.TrainSearch{
-		ResultCode: resultCode,
-		Found:      countFound,
-		Parsed:     countParsed,
-		Trains:     trains,
+		Found:  countFound,
+		Parsed: countParsed,
+		Trains: trains,
 	})
 }
 
@@ -62,21 +60,19 @@ func QuickSearch(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) 
 	logger.Debug("train/qsearch: query='", query, "' count='", count, "'")
 
 	trains, countFound, countParsed, err := parser.TrainSearch(query, count, true, getParams(v))
-	resultCode := 200
 	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 404
+			w.WriteHeader(http.StatusNotFound)
 		} else {
-			resultCode = 500
+			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
 	}
 
 	json.NewEncoder(w).Encode(response.TrainSearch{
-		ResultCode: resultCode,
-		Found:      countFound,
-		Parsed:     countParsed,
-		Trains:     trains,
+		Found:  countFound,
+		Parsed: countParsed,
+		Trains: trains,
 	})
 }
 

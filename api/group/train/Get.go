@@ -16,25 +16,24 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 
 	if v.Get("id") != "" {
 		id, _ = strconv.Atoi(v.Get("id"))
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		id = -1
 	}
 
 	logger.Debug("train/get: id='", id, "'")
 
 	train, err := parser.TrainGet(id, false)
-	resultCode := 200
-	if err == nil {
-
-	} else {
+	if err != nil {
 		if err.Error() == "404" {
-			resultCode = 404
+			w.WriteHeader(http.StatusNotFound)
 		} else {
-			resultCode = 500
+			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
 	}
 
 	json.NewEncoder(w).Encode(response.TrainGet{
-		ResultCode: resultCode,
-		Train:      train,
+		Train: train,
 	})
 }
