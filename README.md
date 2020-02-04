@@ -1,3 +1,4 @@
 # TrainPix 
-Open source API for [TrainPix](https://trainpix.org/)
+Open source API для [TrainPix](https://trainpix.org/)
 
+Документация по API: https://docs.openpix.ru/

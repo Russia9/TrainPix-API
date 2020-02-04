@@ -1,4 +1,4 @@
-package photo
+package depot
 
 import (
 	"encoding/json"
@@ -13,24 +13,17 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	w.Header().Add("content-type", "application/json")
 	v := r.URL.Query()
 	id := 1
-	quick := false
 
 	if v.Get("id") != "" {
 		id, _ = strconv.Atoi(v.Get("id"))
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
-		id = 0
+		id = -1
 	}
 
-	if v.Get("quick") != "" {
-		if v.Get("quick") == "1" {
-			quick = true
-		}
-	}
+	logger.Debug("depot/get: id='", id, "'")
 
-	logger.Debug("photo/get: id='", id, "' quick='", quick, "'")
-
-	photo, err := parser.PhotoGet(id, quick)
+	train, err := parser.TrainGet(id, false)
 	if err != nil {
 		if err.Error() == "404" {
 			w.WriteHeader(http.StatusNotFound)
@@ -40,7 +33,7 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		}
 	}
 
-	json.NewEncoder(w).Encode(response.PhotoGet{
-		Photo: photo,
+	json.NewEncoder(w).Encode(response.TrainGet{
+		Train: train,
 	})
 }
