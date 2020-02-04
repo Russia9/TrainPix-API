@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"trainpix-api/api/group/photo"
+	"trainpix-api/api/group/railway"
 	"trainpix-api/api/group/train"
 )
 
@@ -35,11 +36,11 @@ func Api(port int, logger *logrus.Logger) {
 
 	// Railway API Group
 	router.HandleFunc("/api/v0.7/railway/get", func(w http.ResponseWriter, r *http.Request) {
-		photo.Get(w, r, logger)
+		railway.Get(w, r, logger)
 	})
 
 	router.HandleFunc("/api/v0.7/railway/search", func(w http.ResponseWriter, r *http.Request) {
-		photo.Random(w, r, logger)
+		railway.Search(w, r, logger)
 	})
 
 	// Depot API Group

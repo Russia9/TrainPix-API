@@ -11,4 +11,3 @@ LABEL maintainer="russia9@russia9.dev"
 WORKDIR /app
 COPY --from=build /app/trainpix-api /app/trainpix-api
 CMD ["/app/trainpix-api"]
-

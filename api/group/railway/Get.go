@@ -5,8 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"trainpix-api/api/response"
-	"trainpix-api/parser"
 )
 
 func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
@@ -23,7 +21,7 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 
 	logger.Debug("railway/get: id='", id, "'")
 
-	train, err := parser.TrainGet(id, false)
+	/*train, err := parser.TrainGet(id, false)
 	if err != nil {
 		if err.Error() == "404" {
 			w.WriteHeader(http.StatusNotFound)
@@ -31,9 +29,7 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 			w.WriteHeader(http.StatusInternalServerError)
 			logger.Trace(err)
 		}
-	}
+	}*/
 
-	json.NewEncoder(w).Encode(response.TrainGet{
-		Train: train,
-	})
+	json.NewEncoder(w).Encode(nil)
 }
