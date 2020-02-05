@@ -5,20 +5,18 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"trainpix-api/api/response"
 	"trainpix-api/parser"
 )
 
 func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	w.Header().Add("content-type", "application/json")
 	v := r.URL.Query()
-	id := 1
+	id := -1
 
 	if v.Get("id") != "" {
 		id, _ = strconv.Atoi(v.Get("id"))
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
-		id = -1
 	}
 
 	logger.Debug("train/get: id='", id, "'")
@@ -33,7 +31,5 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		}
 	}
 
-	json.NewEncoder(w).Encode(response.TrainGet{
-		Train: train,
-	})
+	json.NewEncoder(w).Encode(train)
 }

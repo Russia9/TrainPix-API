@@ -41,7 +41,7 @@ func Search(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	json.NewEncoder(w).Encode(response.TrainSearch{
 		Found:  countFound,
 		Parsed: countParsed,
-		Trains: trains,
+		TrainList: trains,
 	})
 }
 
@@ -72,7 +72,7 @@ func QuickSearch(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) 
 	json.NewEncoder(w).Encode(response.TrainSearch{
 		Found:  countFound,
 		Parsed: countParsed,
-		Trains: trains,
+		TrainList: trains,
 	})
 }
 

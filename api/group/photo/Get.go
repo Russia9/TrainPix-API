@@ -5,7 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"trainpix-api/api/response"
 	"trainpix-api/parser"
 )
 
@@ -40,7 +39,5 @@ func Get(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		}
 	}
 
-	json.NewEncoder(w).Encode(response.PhotoGet{
-		Photo: photo,
-	})
+	json.NewEncoder(w).Encode(photo)
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
+	"trainpix-api/api/group/depot"
 	"trainpix-api/api/group/photo"
 	"trainpix-api/api/group/railway"
 	"trainpix-api/api/group/train"
@@ -45,8 +46,12 @@ func Api(port int, logger *logrus.Logger) {
 
 	// Depot API Group
 	router.HandleFunc("/api/v0.7/depot/get", func(w http.ResponseWriter, r *http.Request) {
-		photo.Get(w, r, logger)
+		depot.Get(w, r, logger)
 	})
+	router.HandleFunc("/api/v0.7/depot/qget", func(w http.ResponseWriter, r *http.Request) {
+		depot.QuickGet(w, r, logger)
+	})
+
 
 	router.HandleFunc("/api/v0.7/depot/search", func(w http.ResponseWriter, r *http.Request) {
 		photo.Random(w, r, logger)

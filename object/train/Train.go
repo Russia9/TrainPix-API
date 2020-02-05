@@ -19,5 +19,5 @@ type Train struct {
 	Condition            int                     `json:"condition,omitempty"`
 	Note                 *string                 `json:"note,omitempty"`
 	Info                 *string                 `json:"info,omitempty"`
-	PhotoList            []*photo.Photo          `json:"photos,omitempty"`
+	PhotoList            *[]*photo.Photo          `json:"photos,omitempty"`
 }

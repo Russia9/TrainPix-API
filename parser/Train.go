@@ -203,6 +203,6 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 		Condition:            condition,
 		Note:                 note,
 		Info:                 info,
-		PhotoList:            photoList,
+		PhotoList:            &photoList,
 	}, nil
 }
