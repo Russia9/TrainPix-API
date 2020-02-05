@@ -5,22 +5,21 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"strconv"
 	"strings"
-	"trainpix-api/object/infrastructure"
-	"trainpix-api/object/train"
+	"trainpix-api/object"
 )
 
-func DepotGet(id int, trainCount int, quick bool) (*infrastructure.Depot, *[]*train.Train, error) {
+func DepotGet(id int, trainCount int, quick bool) (*object.Depot, error) {
 	stringID := strconv.Itoa(id)
 	depotURI := "https://trainpix.org/list.php?did=" + stringID
 	depotDocument, err := GetPage(depotURI)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	var trains []*train.Train
+	var trains []*object.Train
 
 	if depotDocument.Find(":contains('В БД нет записей, удовлетворяющих заданным условиям.')").Size() > 0 {
-		return nil, nil, errors.New("404")
+		return nil, errors.New("404")
 	}
 
 	name := depotDocument.Find("h2").Text()
@@ -48,10 +47,10 @@ func DepotGet(id int, trainCount int, quick bool) (*infrastructure.Depot, *[]*tr
 
 		name := selection.Find("a").Text()
 
-		var trainElement *train.Train
+		var trainElement *object.Train
 
 		if quick {
-			trainElement = &train.Train{
+			trainElement = &object.Train{
 				Id:        id,
 				Name:      name,
 				Condition: condition,
@@ -63,10 +62,11 @@ func DepotGet(id int, trainCount int, quick bool) (*infrastructure.Depot, *[]*tr
 		trains = append(trains, trainElement)
 	})
 
-	return &infrastructure.Depot{
-		Id:   id,
-		Name: name,
-	}, &trains, nil
+	return &object.Depot{
+		Id:        id,
+		Name:      name,
+		TrainList: &trains,
+	}, nil
 }
 
 func DepotSearch(query string, depotId int) {

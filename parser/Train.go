@@ -6,12 +6,10 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"trainpix-api/object/infrastructure"
-	"trainpix-api/object/photo"
-	"trainpix-api/object/train"
+	"trainpix-api/object"
 )
 
-func TrainSearch(query string, count int, quick bool, params map[string]string) ([]*train.Train, int, int, error) {
+func TrainSearch(query string, count int, quick bool, params map[string]string) ([]*object.Train, int, int, error) {
 	searchURI := "https://trainpix.org/vsearch.php?"
 	for key := range params {
 		searchURI = searchURI + "&" + key + "=" + params[key]
@@ -29,7 +27,7 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 
 	countFound, _ := strconv.Atoi(searchDocument.Find(".main").Find("b").First().Text())
 
-	var result []*train.Train
+	var result []*object.Train
 
 	iter := 0
 	countParsed := 0
@@ -54,10 +52,10 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 
 		name := selection.Find("a").Text()
 
-		var trainElement *train.Train
+		var trainElement *object.Train
 
 		if quick {
-			trainElement = &train.Train{
+			trainElement = &object.Train{
 				Id:        id,
 				Name:      name,
 				Condition: condition,
@@ -73,7 +71,7 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 	return result, countFound, countParsed, nil
 }
 
-func TrainGet(id int, quick bool) (*train.Train, error) {
+func TrainGet(id int, quick bool) (*object.Train, error) {
 	stringID := strconv.Itoa(id)
 	trainURI := "https://trainpix.org/vehicle/" + stringID + "/"
 	searchDocument, err := GetPage(trainURI)
@@ -86,9 +84,9 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 	}
 
 	name := searchDocument.Find("h1").First().Text()
-	var railway infrastructure.Railway
-	var depot infrastructure.Depot
-	var model train.Model
+	var railway object.Railway
+	var depot object.Depot
+	var model object.Model
 	var builder *string
 	var identificationNumber *string
 	var serialType *string
@@ -97,7 +95,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 	condition := 1
 	var note *string
 	var info *string
-	var photoList []*photo.Photo
+	var photoList []*object.Photo
 
 	searchDocument.Find(".p0.horlines").Find(".h21").Each(func(i int, selection *goquery.Selection) {
 		if selection.Children().Size() > 1 {
@@ -108,7 +106,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "/")[2])
 				railwayName := linkElement.Text()
-				railway = infrastructure.Railway{
+				railway = object.Railway{
 					Id:   elementId,
 					Name: railwayName,
 				}
@@ -118,7 +116,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
 				depotName := linkElement.Text()
-				depot = infrastructure.Depot{
+				depot = object.Depot{
 					Id:   elementId,
 					Name: depotName,
 				}
@@ -128,7 +126,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 				link, _ := linkElement.Attr("href")
 				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
 				modelName := linkElement.Text()
-				model = train.Model{
+				model = object.Model{
 					Id:   elementId,
 					Name: modelName,
 				}
@@ -189,7 +187,7 @@ func TrainGet(id int, quick bool) (*train.Train, error) {
 		photoList = append(photoList, trainPhoto)
 	})
 
-	return &train.Train{
+	return &object.Train{
 		Id:                   id,
 		Name:                 name,
 		Railway:              &railway,

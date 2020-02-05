@@ -4,11 +4,10 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"trainpix-api/object/photo"
-	"trainpix-api/object/train"
+	"trainpix-api/object"
 )
 
-func PhotoGet(id int, quick bool) (*photo.Photo, error) {
+func PhotoGet(id int, quick bool) (*object.Photo, error) {
 	pageLink := "https://trainpix.org/photo/" + strconv.Itoa(id) + "/"
 	imageLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + ".jpg"
 	thumbnailLink := "https://trainpix.org/photo" + getIDString(id) + "/" + strconv.Itoa(id) + "_s.jpg"
@@ -41,7 +40,7 @@ func PhotoGet(id int, quick bool) (*photo.Photo, error) {
 		date = &dateText
 	}
 
-	return &photo.Photo{
+	return &object.Photo{
 		Id:         id,
 		Image:      imageLink,
 		Thumbnail:  thumbnailLink,
@@ -53,7 +52,7 @@ func PhotoGet(id int, quick bool) (*photo.Photo, error) {
 	}, nil
 }
 
-func RandomPhotoGet() (*photo.Photo, *train.Train, error) {
+func RandomPhotoGet() (*object.Photo, *object.Train, error) {
 	pageLink := "https://trainpix.org/ph.php"
 	pageDocument, err := GetPage(pageLink)
 	if err != nil {

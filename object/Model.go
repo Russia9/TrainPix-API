@@ -1,4 +1,4 @@
-package train
+package object
 
 type Model struct {
 	Id   int    `json:"id"`

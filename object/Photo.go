@@ -1,4 +1,4 @@
-package photo
+package object
 
 type Photo struct {
 	Id              int     `json:"ID"`
