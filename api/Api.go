@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -25,7 +26,8 @@ func Api(port int, logger *logrus.Logger) {
 func HandleAPI(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	w.Header().Add("content-type", "application/json")
 	vars := mux.Vars(r)
-	//query := r.URL.Query()
+	query := r.URL.Query()
+	encoder := json.NewEncoder(w)
 
 	logger.Debug("API Request: /" + vars["group"] + "/" + vars["method"])
 
