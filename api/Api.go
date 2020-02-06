@@ -6,6 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
+	"trainpix-api/api/groups/photo"
+	"trainpix-api/api/groups/train"
 )
 
 func Api(port int, logger *logrus.Logger) {
@@ -28,6 +30,7 @@ func HandleAPI(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	vars := mux.Vars(r)
 	query := r.URL.Query()
 	encoder := json.NewEncoder(w)
+	var err error
 
 	logger.Debug("API Request: /" + vars["group"] + "/" + vars["method"])
 
@@ -35,8 +38,13 @@ func HandleAPI(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 	case "train":
 		switch vars["method"] {
 		case "search":
+			_, err = train.Search(query, false)
+			break
+		case "qsearch":
+			_, err = train.Search(query, true)
 			break
 		case "get":
+			_, err = train.Get(query)
 			break
 		}
 		break
@@ -45,8 +53,10 @@ func HandleAPI(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		case "search":
 			break
 		case "get":
+			_, err = photo.Get(query)
 			break
 		case "random":
+			_, err = photo.RandomGet()
 			break
 		}
 		break
@@ -68,5 +78,20 @@ func HandleAPI(w http.ResponseWriter, r *http.Request, logger *logrus.Logger) {
 		break
 	default:
 		break
+	}
+
+	if err != nil {
+		if err.Error() == "404" {
+			w.WriteHeader(http.StatusNotFound)
+		} else if err.Error() == "400" {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+
+	err = encoder.Encode(nil)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
