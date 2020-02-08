@@ -51,5 +51,5 @@ func main() {
 
 	log.Debug("Starting server at port: ", port)
 
-	api.Api(port, log)
+	api.Route(port, log)
 }

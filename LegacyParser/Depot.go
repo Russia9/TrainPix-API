@@ -1,4 +1,4 @@
-package parser
+package LegacyParser
 
 import (
 	"errors"
@@ -67,8 +67,4 @@ func DepotGet(id int, trainCount int, quick bool) (*object.Depot, error) {
 		Name:      name,
 		TrainList: &trains,
 	}, nil
-}
-
-func DepotSearch(query string, depotId int) {
-
 }

@@ -1,4 +1,4 @@
-package parser
+package LegacyParser
 
 import (
 	"errors"

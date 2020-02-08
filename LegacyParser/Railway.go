@@ -1,4 +1,4 @@
-package parser
+package LegacyParser
 
 func RailwayGet(id int) {
 
