@@ -1,10 +1,12 @@
 package method
 
-import "github.com/sirupsen/logrus"
+import (
+	"net/url"
+	"trainpix-api/api/response"
+)
 
 type Method interface {
 	GetGroup() string
-	GetAlias() string
-	Process(params map[string]string, logger logrus.Logger) error
+	GetMethod() string
+	Process(params url.Values) (response.Response, error)
 }
-

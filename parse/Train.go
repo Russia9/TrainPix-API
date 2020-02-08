@@ -1,4 +1,4 @@
-package LegacyParser
+package parse
 
 import (
 	"errors"
@@ -97,7 +97,7 @@ func TrainGet(id int, quick bool) (*object.Train, error) {
 	var info *string
 	var photoList []*object.Photo
 
-	searchDocument.Find(".p0.horlines").Find(".h21").Each(func(i int, selection *goquery.Selection) {
+	searchDocument.Find(".horlines").Find(".h21").Each(func(i int, selection *goquery.Selection) {
 		if selection.Children().Size() > 1 {
 			key := selection.Find(".ds").Text()
 			switch key {

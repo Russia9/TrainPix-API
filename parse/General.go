@@ -1,4 +1,4 @@
-package LegacyParser
+package parse
 
 import (
 	"errors"
@@ -21,3 +21,4 @@ func GetPage(URI string) (*goquery.Document, error) {
 
 	return document, err
 }
+

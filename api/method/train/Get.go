@@ -2,32 +2,49 @@ package train
 
 import (
 	"errors"
+	"net/url"
 	"strconv"
+	"trainpix-api/api/response"
+	"trainpix-api/api/response/train"
+	"trainpix-api/parse"
 )
 
 type Get struct {
-	group string
-	alias string
+	Group  string
+	Method string
 }
 
-func (object Get) GetAlias() string {
-	return object.alias
+func (object Get) GetGroup() string {
+	return object.Group
 }
 
-func (object Get) Process(params map[string]string) error {
+func (object Get) GetMethod() string {
+	return object.Method
+}
+
+func (object Get) Process(params url.Values) (response.Response, error) {
 	id := -1
 	var err error
 
-	stringId, contains := params["id"]
-	if contains {
-		id, err = strconv.Atoi(stringId)
+	if params.Get("id") != "" {
+		id, err = strconv.Atoi(params.Get("id"))
 
 		if err != nil {
-			return errors.New("400")
+			return train.Get{Status: 400}, errors.New("400")
 		}
 	} else {
-		return errors.New("400")
+		return train.Get{Status: 400}, errors.New("400")
 	}
 
-	return nil
+	result, err := parse.TrainGet(id, false)
+
+	if err != nil {
+		if err.Error() == "404" {
+			return train.Get{Status: 404}, errors.New("404")
+		} else {
+			return train.Get{Status: 500}, errors.New("500")
+		}
+	}
+
+	return train.Get{Status: 200, Train: result}, nil
 }
