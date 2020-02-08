@@ -8,5 +8,5 @@ import (
 type Method interface {
 	GetGroup() string
 	GetMethod() string
-	Process(params url.Values) (response.Response, error)
+	Process(params url.Values) response.Response
 }

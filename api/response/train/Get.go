@@ -4,7 +4,7 @@ import "trainpix-api/object"
 
 type Get struct {
 	Status int           `json:"status"`
-	Train  *object.Train `json:"train,omitempty"`
+	Result *object.Train `json:"result,omitempty"`
 }
 
 func (object Get) GetStatus() int {

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -18,11 +19,9 @@ func Route(port int, logger *logrus.Logger) {
 		train.Get{Group: "train", Method: "get"},
 	}
 
-	for _, currentMethod := range methods {
-		router.HandleFunc("/v1/" + currentMethod.GetGroup() + "/" + currentMethod.GetMethod(), func(writer http.ResponseWriter, request *http.Request) {
-			HandleAPI(writer, request, currentMethod, logger)
-		})
-	}
+	router.HandleFunc("/v1/{group}/{method}", func(writer http.ResponseWriter, request *http.Request) {
+		HandleAPI(writer, request, methods, logger)
+	})
 
 	logger.Debug("Creating HTTP server")
 	err := http.ListenAndServe(":"+strconv.Itoa(port), router)
@@ -31,25 +30,22 @@ func Route(port int, logger *logrus.Logger) {
 	}
 }
 
-func HandleAPI(writer http.ResponseWriter, request *http.Request, method method.Method, logger *logrus.Logger) {
-	writer.Header().Add("content-type", "application/json")
-
+func HandleAPI(writer http.ResponseWriter, request *http.Request, methods []method.Method, logger *logrus.Logger) {
+	vars := mux.Vars(request)
 	query := request.URL.Query()
 	encoder := json.NewEncoder(writer)
 
-	logger.Debug("API Request: /" + method.GetGroup() + "/" + method.GetMethod())
+	writer.Header().Add("content-type", "application/json")
 
-	response, err := method.Process(query)
-
-	if err == nil {
-		writer.WriteHeader(200)
-	} else if err.Error() == "400" {
-		writer.WriteHeader(400)
-	} else if err.Error() == "404" {
-		writer.WriteHeader(404)
-	} else if err.Error() == "500" {
-		writer.WriteHeader(500)
+	for _, current := range methods {
+		if current.GetGroup() == vars["group"] && current.GetMethod() == vars["method"] {
+			logger.Debug("API Request: /" + current.GetGroup() + "/" + current.GetMethod())
+			result := current.Process(query)
+			writer.WriteHeader(result.GetStatus())
+			encoder.Encode(result)
+			return
+		}
 	}
 
-	encoder.Encode(response)
+	fmt.Fprint(writer, "{}")
 }
