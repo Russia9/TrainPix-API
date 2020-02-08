@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"trainpix-api/api/method"
+	"trainpix-api/api/method/photo"
 	"trainpix-api/api/method/train"
 )
 
@@ -17,8 +18,12 @@ func Route(port int, logger *logrus.Logger) {
 
 	methods := []method.Method{
 		train.Get{Group: "train", Method: "get"},
-		train.Search{Group:"train", Method:"search"},
-		train.QSearch{Group:"train", Method:"qsearch"},
+		train.Search{Group: "train", Method: "search"},
+		train.QSearch{Group: "train", Method: "qsearch"},
+
+		photo.Get{Group: "photo", Method: "get"},
+		photo.Random{Group: "photo", Method: "random"},
+		photo.Search{Group: "photo", Method: "search"},
 	}
 
 	router.HandleFunc("/v1/{group}/{method}", func(writer http.ResponseWriter, request *http.Request) {

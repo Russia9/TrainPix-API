@@ -31,7 +31,7 @@ func (object QSearch) Process(params url.Values) response.Response {
 	if params.Get("count") != "" {
 		count, err = strconv.Atoi(params.Get("count"))
 		if err != nil {
-			return train.Search{Status:400}
+			return train.Search{Status: 400}
 		}
 	}
 
@@ -42,9 +42,9 @@ func (object QSearch) Process(params url.Values) response.Response {
 	trains, countFound, countParsed, err := parse.TrainSearch(query, count, true, getParams(params))
 	if err != nil {
 		if err.Error() == "404" {
-			return train.Search{Status:404}
+			return train.Search{Status: 404}
 		} else {
-			return train.Search{Status:500}
+			return train.Search{Status: 500}
 		}
 	}
 

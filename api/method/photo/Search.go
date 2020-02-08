@@ -1,10 +1,10 @@
-package train
+package photo
 
 import (
 	"net/url"
 	"strconv"
 	"trainpix-api/api/response"
-	"trainpix-api/api/response/train"
+	"trainpix-api/api/response/photo"
 	"trainpix-api/parse"
 )
 
@@ -23,7 +23,7 @@ func (object Search) GetMethod() string {
 
 func (object Search) Process(params url.Values) response.Response {
 	var err error
-	query := "ЭР2"
+	query := "ЭД4М-0500"
 	if params.Get("query") != "" {
 		query = params.Get("query")
 	}
@@ -31,7 +31,7 @@ func (object Search) Process(params url.Values) response.Response {
 	if params.Get("count") != "" {
 		count, err = strconv.Atoi(params.Get("count"))
 		if err != nil {
-			return train.Search{Status: 400}
+			return photo.Search{Status: 400}
 		}
 	}
 
@@ -39,29 +39,25 @@ func (object Search) Process(params url.Values) response.Response {
 		count = 20
 	}
 
-	trains, countFound, countParsed, err := parse.TrainSearch(query, count, false, getParams(params))
+	trains, countFound, err := parse.PhotoSearch(query, count, getParams(params))
 	if err != nil {
 		if err.Error() == "404" {
-			return train.Search{Status: 404}
+			return photo.Search{Status:404}
 		} else {
-			return train.Search{Status: 500}
+			return photo.Search{Status:500}
 		}
 	}
 
-	return train.Search{
+	return photo.Search{
 		Status: 200,
 		Found:  &countFound,
-		Parsed: &countParsed,
-		Result: &trains,
+		Result: trains,
 	}
 }
 
 func getParams(v url.Values) map[string]string {
 	params := make(map[string]string)
 
-	if v.Get("state") != "" {
-		params["state"] = v.Get("state")
-	}
 	if v.Get("order") != "" {
 		params["order"] = v.Get("order")
 	}

@@ -2,6 +2,8 @@ package parse
 
 import (
 	"errors"
+	"github.com/PuerkitoBio/goquery"
+	"net/url"
 	"strconv"
 	"strings"
 	"trainpix-api/object"
@@ -83,6 +85,47 @@ func RandomPhotoGet() (*object.Photo, *object.Train, error) {
 	}
 
 	return photoObject, trainObject, nil
+}
+
+func PhotoSearch(query string, count int, params map[string]string) (*[]*object.Photo, int, error) {
+	searchURI := "https://trainpix.org/search.php?"
+	for key := range params {
+		searchURI = searchURI + "&" + key + "=" + params[key]
+	}
+	searchURI = searchURI + "&num=" + url.QueryEscape(query)
+
+	searchDocument, err := GetPage(searchURI)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	countFound, _ := strconv.Atoi(searchDocument.Find(".main").Find("b").First().Text())
+
+	var result []*object.Photo
+
+	searchDocument.Find("a.prw").Each(func(i int, selection *goquery.Selection) {
+		if i > count {
+			return
+		}
+
+		link, errBoolean := selection.Attr("href")
+		if !errBoolean {
+			return
+		}
+
+		id, err := strconv.Atoi(strings.Split(link, "/")[2])
+		if err != nil {
+			return
+		}
+		photoObject, err := PhotoGet(id, false)
+		if err != nil {
+			return
+		}
+
+		result = append(result, photoObject)
+	})
+
+	return &result, countFound, nil
 }
 
 func getIDString(id int) string {
