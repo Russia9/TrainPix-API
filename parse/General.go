@@ -21,4 +21,3 @@ func GetPage(URI string) (*goquery.Document, error) {
 
 	return document, err
 }
-

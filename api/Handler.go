@@ -17,6 +17,8 @@ func Route(port int, logger *logrus.Logger) {
 
 	methods := []method.Method{
 		train.Get{Group: "train", Method: "get"},
+		train.Search{Group:"train", Method:"search"},
+		train.QSearch{Group:"train", Method:"qsearch"},
 	}
 
 	router.HandleFunc("/v1/{group}/{method}", func(writer http.ResponseWriter, request *http.Request) {
@@ -39,7 +41,7 @@ func HandleAPI(writer http.ResponseWriter, request *http.Request, methods []meth
 
 	for _, current := range methods {
 		if current.GetGroup() == vars["group"] && current.GetMethod() == vars["method"] {
-			logger.Debug("API Request: /" + current.GetGroup() + "/" + current.GetMethod())
+			logger.Debug("API Request: /" + current.GetGroup() + "/" + current.GetMethod() + " " + query.Encode())
 			result := current.Process(query)
 			writer.WriteHeader(result.GetStatus())
 			encoder.Encode(result)
