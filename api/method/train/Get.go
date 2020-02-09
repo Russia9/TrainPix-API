@@ -40,9 +40,8 @@ func (object Get) Process(params url.Values) response.Response {
 	if err != nil {
 		if err.Error() == "404" {
 			return train.Get{Status: 404}
-		} else {
-			return train.Get{Status: 500}
 		}
+		return train.Get{Status: 500}
 	}
 
 	return train.Get{Status: 200, Result: result}

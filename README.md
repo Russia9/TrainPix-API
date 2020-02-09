@@ -1,7 +1,7 @@
 # TrainPix  ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Russia9/TrainPix-API/Go?label=Go%20build&style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Russia9/TrainPix-API/Docker%20Image%20CI?label=%20Docker%20build&style=flat-square) [![Discord](https://img.shields.io/discord/665933070142144514?label=Discord&style=flat-square)](https://discord.gg/S4EbHg4)
 Open source API для [TrainPix](https://trainpix.org/)
 
-### Отказ от ответственности
+## Отказ от ответственности
 Все материалы, получаемые через данный API принадлежат их законным владельцам, а информация о подвижном составе - сайту [TrainPix](https://trainpix.org/).
 
 Используя API вы соглашаетесь с [правилами](https://trainpix.org/rules/) TrainPix.
@@ -10,6 +10,6 @@ Open source API для [TrainPix](https://trainpix.org/)
 Вся документация по использованию API находится здесь: [ТЫК](https://docs.openpix.ru/)
 
 ## Использованные библиотеки
- - [`goquery`](https://github.com/PuerkitoBio/goquery) - Parsing
- - [`gorilla/mux`](https://github.com/gorilla/mux) - Routing методов API
- - [`logrus`](https://github.com/sirupsen/logrus) - Logging
+-  [`goquery`](https://github.com/PuerkitoBio/goquery) - Parsing
+-  [`gorilla/mux`](https://github.com/gorilla/mux) - Routing методов API
+-  [`logrus`](https://github.com/sirupsen/logrus) - Logging

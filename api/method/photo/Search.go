@@ -42,10 +42,9 @@ func (object Search) Process(params url.Values) response.Response {
 	trains, countFound, err := parse.PhotoSearch(query, count, getParams(params))
 	if err != nil {
 		if err.Error() == "404" {
-			return photo.Search{Status:404}
-		} else {
-			return photo.Search{Status:500}
+			return photo.Search{Status: 404}
 		}
+		return photo.Search{Status: 500}
 	}
 
 	return photo.Search{

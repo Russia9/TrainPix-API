@@ -56,7 +56,7 @@ func TrainSearch(query string, count int, quick bool, params map[string]string) 
 
 		if quick {
 			trainElement = &object.Train{
-				Id:        id,
+				ID:        id,
 				Name:      name,
 				Condition: condition,
 			}
@@ -104,30 +104,30 @@ func TrainGet(id int, quick bool) (*object.Train, error) {
 			case "Дорога приписки:":
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "/")[2])
+				elementID, _ := strconv.Atoi(strings.Split(link, "/")[2])
 				railwayName := linkElement.Text()
 				railway = object.Railway{
-					Id:   elementId,
+					ID:   elementID,
 					Name: railwayName,
 				}
 				break
 			case "Депо:":
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				elementID, _ := strconv.Atoi(strings.Split(link, "=")[1])
 				depotName := linkElement.Text()
 				depot = object.Depot{
-					Id:   elementId,
+					ID:   elementID,
 					Name: depotName,
 				}
 				break
 			case "Серия:":
 				linkElement := selection.Find("a")
 				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				elementID, _ := strconv.Atoi(strings.Split(link, "=")[1])
 				modelName := linkElement.Text()
 				model = object.Model{
-					Id:   elementId,
+					ID:   elementID,
 					Name: modelName,
 				}
 				break
@@ -188,7 +188,7 @@ func TrainGet(id int, quick bool) (*object.Train, error) {
 	})
 
 	return &object.Train{
-		Id:                   id,
+		ID:                   id,
 		Name:                 name,
 		Railway:              &railway,
 		Depot:                &depot,

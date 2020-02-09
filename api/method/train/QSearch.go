@@ -43,9 +43,8 @@ func (object QSearch) Process(params url.Values) response.Response {
 	if err != nil {
 		if err.Error() == "404" {
 			return train.Search{Status: 404}
-		} else {
-			return train.Search{Status: 500}
 		}
+		return train.Search{Status: 500}
 	}
 
 	return train.Search{

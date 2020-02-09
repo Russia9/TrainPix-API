@@ -43,7 +43,7 @@ func PhotoGet(id int, quick bool) (*object.Photo, error) {
 	}
 
 	return &object.Photo{
-		Id:         id,
+		ID:         id,
 		Image:      imageLink,
 		Thumbnail:  thumbnailLink,
 		Page:       pageLink,
@@ -60,26 +60,26 @@ func RandomPhotoGet() (*object.Photo, *object.Train, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	photoUrl, _ := pageDocument.Find("#ph").Attr("src")
+	photoURI, _ := pageDocument.Find("#ph").Attr("src")
 
-	photoId, err := strconv.Atoi(strings.Split(strings.Split(photoUrl, "/")[5], ".")[0])
+	photoID, err := strconv.Atoi(strings.Split(strings.Split(photoURI, "/")[5], ".")[0])
 	if err != nil {
 		return nil, nil, err
 	}
 
-	trainUrl, _ := pageDocument.Find(".pwrite").First().Find("a").Attr("href")
+	trainURI, _ := pageDocument.Find(".pwrite").First().Find("a").Attr("href")
 
-	trainId, err := strconv.Atoi(strings.Split(trainUrl, "/")[2])
+	trainID, err := strconv.Atoi(strings.Split(trainURI, "/")[2])
 	if err != nil {
 		return nil, nil, err
 	}
 
-	trainObject, err := TrainGet(trainId, true)
+	trainObject, err := TrainGet(trainID, true)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	photoObject, err := PhotoGet(photoId, false)
+	photoObject, err := PhotoGet(photoID, false)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -129,9 +129,9 @@ func PhotoSearch(query string, count int, params map[string]string) (*[]*object.
 }
 
 func getIDString(id int) string {
-	strId := strconv.Itoa(id)
-	idLen := len(strId) - 1
-	first := strId[:idLen]
+	strID := strconv.Itoa(id)
+	idLen := len(strID) - 1
+	first := strID[:idLen]
 	str := ""
 	for i := 0; i < 6; i++ {
 		if i%2 == 0 {
