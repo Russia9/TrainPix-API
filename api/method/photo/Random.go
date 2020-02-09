@@ -3,8 +3,6 @@ package photo
 import (
 	"net/url"
 	"trainpix-api/api/response"
-	"trainpix-api/api/response/photo"
-	"trainpix-api/parse"
 )
 
 type Random struct {
@@ -21,15 +19,5 @@ func (object Random) GetMethod() string {
 }
 
 func (object Random) Process(params url.Values) response.Response {
-	result, train, err := parse.RandomPhotoGet()
 
-	if err != nil {
-		return photo.Random{Status: 500}
-	}
-
-	return photo.Random{
-		Status: 200,
-		Photo:  result,
-		Train:  train,
-	}
 }
