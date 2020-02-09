@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"trainpix-api/api/method"
+	"trainpix-api/api/method/depot"
 	"trainpix-api/api/method/photo"
 	"trainpix-api/api/method/train"
 )
@@ -24,6 +25,9 @@ func Route(port int, logger *logrus.Logger) {
 		photo.Get{Group: "photo", Method: "get"},
 		photo.Random{Group: "photo", Method: "random"},
 		photo.Search{Group: "photo", Method: "search"},
+
+		depot.Get{Group: "depot", Method: "get"},
+		depot.Search{Group: "depot", Method: "search"},
 	}
 
 	router.HandleFunc("/v1/{group}/{method}", func(writer http.ResponseWriter, request *http.Request) {

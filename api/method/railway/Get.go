@@ -21,4 +21,3 @@ func (object Get) GetMethod() string {
 func (object Get) Process(params url.Values) response.Response {
 
 }
-

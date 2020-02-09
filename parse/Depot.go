@@ -3,10 +3,49 @@ package parse
 import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/lithammer/fuzzysearch/fuzzy"
 	"strconv"
 	"strings"
 	"trainpix-api/object"
 )
+
+func DepotSearch(query string, railwayID int, count int, trains int, quick bool) ([]*object.Depot, error) {
+	railwayURI := "https://trainpix.org/railway/" + strconv.Itoa(railwayID) + "/"
+	railwayDocument, err := GetPage(railwayURI)
+	if err != nil {
+		return nil, err
+	}
+
+	num := 0
+
+	var result []*object.Depot
+
+	listElement := railwayDocument.Find(":contains('Списки подвижного состава')").Parent().Last().Parent().Last()
+	listElement.Find("b").Find("a").Each(func(i int, selection *goquery.Selection) {
+		if num >= count {
+			return
+		}
+
+		if fuzzy.Match(query, selection.Text()) {
+			depotURI, _ := selection.Attr("href")
+
+			id, err := strconv.Atoi(strings.Split(depotURI, "=")[1])
+			if err != nil {
+				return
+			}
+
+			depot, err := DepotGet(id, trains, quick)
+			if err != nil {
+				return
+			}
+
+			result = append(result, depot)
+			num++
+		}
+	})
+
+	return result, nil
+}
 
 func DepotGet(id int, trainCount int, quick bool) (*object.Depot, error) {
 	stringID := strconv.Itoa(id)
@@ -67,8 +106,4 @@ func DepotGet(id int, trainCount int, quick bool) (*object.Depot, error) {
 		Name:      name,
 		TrainList: &trains,
 	}, nil
-}
-
-func DepotSearch(query string, railwayID int, count int)  {
-
 }
