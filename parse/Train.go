@@ -104,8 +104,20 @@ func TrainGet(id int, photoCount int, quick bool) (*object.Train, error) {
 			switch key {
 			case "Дорога приписки:":
 				linkElement := selection.Find("a")
-				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "/")[2])
+				if linkElement.Size() == 0 {
+					return
+				}
+
+				link, errBool := linkElement.Attr("href")
+				if !errBool {
+					return
+				}
+
+				elementId, err := strconv.Atoi(strings.Split(link, "/")[2])
+				if err != nil {
+					return
+				}
+
 				railwayName := linkElement.Text()
 				railway = object.Railway{
 					ID:   elementId,
@@ -114,8 +126,20 @@ func TrainGet(id int, photoCount int, quick bool) (*object.Train, error) {
 				break
 			case "Депо:":
 				linkElement := selection.Find("a")
-				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				if linkElement.Size() == 0 {
+					return
+				}
+
+				link, errBool := linkElement.Attr("href")
+				if !errBool {
+					return
+				}
+
+				elementId, err := strconv.Atoi(strings.Split(link, "=")[1])
+				if err != nil {
+					return
+				}
+
 				depotName := linkElement.Text()
 				depot = object.Depot{
 					ID:   elementId,
@@ -124,8 +148,20 @@ func TrainGet(id int, photoCount int, quick bool) (*object.Train, error) {
 				break
 			case "Серия:":
 				linkElement := selection.Find("a")
-				link, _ := linkElement.Attr("href")
-				elementId, _ := strconv.Atoi(strings.Split(link, "=")[1])
+				if linkElement.Size() == 0 {
+					return
+				}
+
+				link, errBool := linkElement.Attr("href")
+				if !errBool {
+					return
+				}
+
+				elementId, err := strconv.Atoi(strings.Split(link, "/")[2])
+				if err != nil {
+					return
+				}
+
 				modelName := linkElement.Text()
 				model = object.Model{
 					ID:   elementId,
