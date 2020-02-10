@@ -21,7 +21,6 @@ func Route(port int, logger *logrus.Logger) {
 	methods := []method.Method{
 		train.Get{Group: "train", Method: "get"},
 		train.Search{Group: "train", Method: "search"},
-		train.QSearch{Group: "train", Method: "qsearch"},
 
 		photo.Get{Group: "photo", Method: "get"},
 		photo.Random{Group: "photo", Method: "random"},

@@ -2,11 +2,9 @@ package parse
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 	"trainpix-api/object"
@@ -19,62 +17,75 @@ type railway struct {
 	RName string `json:"rname"`
 }
 
-func RailwayGet(id int, count int, trains int, quick bool) (*object.Railway, error) {
-	railwayURI := "https://trainpix.org/railway/" + strconv.Itoa(id)
-	railwayDocument, err := GetPage(railwayURI)
+func RailwayGet(id int, depotCount int, trainCount int, photoCount int, quick bool) (*object.Railway, error) {
+	var depots []*object.Depot
+	uri := "https://trainpix.org/railway/" + strconv.Itoa(id)
+	document, err := GetPage(uri)
 	if err != nil {
 		return nil, err
 	}
 
-	name := railwayDocument.Find("h1").Text()
+	name := document.Find("h1").Text()
 
-	num := 0
-
-	var result []*object.Depot
-
-	listElement := railwayDocument.Find(":contains('Списки подвижного состава')").Parent().Last().Parent().Last()
-	listElement.Find("b").Find("a").Each(func(i int, selection *goquery.Selection) {
-		if num >= count {
+	document.Find(":contains('Списки подвижного состава')").Parent().Last().Parent().Last().Find("b").Find("a").Each(func(i int, selection *goquery.Selection) {
+		if i > depotCount {
 			return
 		}
 
-		depotURI, _ := selection.Attr("href")
+		depotURI, errBool := selection.Attr("href")
+		if !errBool {
+			return
+		}
 
-		id, err := strconv.Atoi(strings.Split(depotURI, "=")[1])
+		depotID, err := strconv.Atoi(strings.Split(depotURI, "=")[1])
 		if err != nil {
 			return
 		}
 
-		depot, err := DepotGet(id, trains, quick)
+		depotGet, err := DepotGet(depotID, trainCount, photoCount, quick)
 		if err != nil {
 			return
 		}
 
-		result = append(result, depot)
-		num++
+		depots = append(depots, depotGet)
 	})
 
 	return &object.Railway{
 		ID:        id,
 		Name:      name,
-		DepotList: &result,
+		DepotList: &depots,
 	}, nil
 }
 
-func RailwaySearch(query string) {
-	var railways []railway
-	queryURI := "https://trainpix.org/ajax2.php?action=get-cities&term=" + url.QueryEscape(query)
-	queryResult, err := http.Get(queryURI)
+func RailwaySearch(query string, depotCount int, trainCount int, photoCount int, quick bool) ([]*object.Railway, int, error) {
+	uri := "https://trainpix.org/ajax2.php?action=get-cities&term=" + query
+	var jsonResponse []railway
+	var result []*object.Railway
+
+	response, err := http.Get(uri)
 	if err != nil {
-		return
+		return nil, 0, err
 	}
 
-	queryData, err := ioutil.ReadAll(queryResult.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return
+		return nil, 0, err
 	}
 
-	json.Unmarshal(queryData, &railways)
+	json.Unmarshal(body, &jsonResponse)
 
-	fmt.Println(railways[0].Label)
+	found := 0
+
+	for _, element := range jsonResponse {
+		id, _ := strconv.Atoi(element.ID)
+		railwayObject, err := RailwayGet(id, depotCount, trainCount, photoCount, quick)
+		if err != nil {
+			return nil, 0, err
+		}
+
+		result = append(result, railwayObject)
+		found++
+	}
+
+	return result, found, nil
 }

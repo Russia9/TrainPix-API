@@ -3,6 +3,9 @@ package photo
 import (
 	"net/url"
 	"trainpix-api/api/response"
+	"trainpix-api/api/response/photo"
+	"trainpix-api/object"
+	"trainpix-api/parse"
 )
 
 type Random struct {
@@ -10,14 +13,31 @@ type Random struct {
 	Method string
 }
 
-func (object Random) GetGroup() string {
-	return object.Group
+func (method Random) GetGroup() string {
+	return method.Group
 }
 
-func (object Random) GetMethod() string {
-	return object.Method
+func (method Random) GetMethod() string {
+	return method.Method
 }
 
-func (object Random) Process(params url.Values) response.Response {
+func (method Random) Process(_ url.Values) response.Response {
+	var err error
+	var photoObject *object.Photo
+	var trainObject *object.Train
 
+	photoObject, trainObject, err = parse.RandomPhotoGet()
+	if err != nil {
+		if err.Error() == "404" {
+			return photo.Random{Status: 404}
+		} else {
+			return photo.Random{Status: 500}
+		}
+	}
+
+	return photo.Random{
+		Status: 200,
+		Photo:  photoObject,
+		Train:  trainObject,
+	}
 }
