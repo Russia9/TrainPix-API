@@ -9,7 +9,7 @@ import (
 	"trainpix-api/object"
 )
 
-func TrainSearch(query string, count int, photoCount int, quick bool, params map[string]string) ([]*object.Train, int, int, error) {
+func TrainSearch(query string, count int, photoCount int, quick bool, photoQuick bool, params map[string]string) ([]*object.Train, int, int, error) {
 	var result []*object.Train
 
 	uri := "https://trainpix.org/vsearch.php?"
@@ -62,7 +62,7 @@ func TrainSearch(query string, count int, photoCount int, quick bool, params map
 				Condition: condition,
 			}
 		} else {
-			trainElement, _ = TrainGet(id, photoCount, false)
+			trainElement, _ = TrainGet(id, photoCount, photoQuick)
 		}
 
 		result = append(result, trainElement)

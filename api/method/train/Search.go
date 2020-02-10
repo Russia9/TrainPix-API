@@ -31,6 +31,7 @@ func (method Search) Process(params url.Values) response.Response {
 	count := 5
 	photoCount := 1
 	quick := false
+	photoQuick := true
 
 	if params.Get("query") != "" {
 		query = params.Get("query")
@@ -60,6 +61,16 @@ func (method Search) Process(params url.Values) response.Response {
 		}
 	}
 
+	if params.Get("photoQuick") != "" {
+		quickInt, err := strconv.Atoi(params.Get("photoQuick"))
+		if err != nil {
+			return train.Get{Status: 400}
+		}
+		if quickInt == 0 {
+			photoQuick = false
+		}
+	}
+
 	if photoCount > 10 {
 		photoCount = 10
 	}
@@ -74,7 +85,7 @@ func (method Search) Process(params url.Values) response.Response {
 		}
 	}
 
-	result, countFound, countParsed, err = parse.TrainSearch(query, count, photoCount, quick, getParams(params))
+	result, countFound, countParsed, err = parse.TrainSearch(query, count, photoCount, quick, photoQuick, getParams(params))
 	if err != nil {
 		if err.Error() == "404" {
 			return train.Get{Status: 404}
